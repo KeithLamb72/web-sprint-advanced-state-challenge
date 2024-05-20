@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThink } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export const postOrder = createAsyncThink('form/postOrder', async(order, { rejectWithValue }) => {
+export const postOrder = createAsyncThunk('form/postOrder', async(order, { rejectWithValue }) => {
     try {
         const response = await axios.post('http://localhost:9009/api/pizza/order', order)
         return response.data
@@ -37,7 +37,7 @@ const formSlice = createSlice({
         .addCase(postOrder.pending, (state) => {
             state.status = 'loading'
         })
-        .addCase(postOrder.pending, (state) => {
+        .addCase(postOrder.fulfilled, (state) => {
             state.status = 'succeeded'
             state.fullName = ''
             state.size = ''

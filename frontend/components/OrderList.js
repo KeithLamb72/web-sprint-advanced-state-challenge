@@ -1,17 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchOrders } from '../state/slices/ordersSlice'
 
 export default function OrderList() {
-  const orders = []
+  const dispatch = useDispatch()
+  const orders = useSelector((state) => state.orders.orders)
+  const status = useSelector((state) => state.orders.status)
+
+  useEffect(() => {
+    dispatch(fetchOrders())
+  }, [dispatch])
+
+  if (status === 'loading') {
+    return <div>Loading orders...</div>
+  }
+
   return (
     <div id="orderList">
       <h2>Pizza Orders</h2>
       <ol>
         {
-          orders.map(() => {
+          orders.map((order) => {
             return (
-              <li key={1}>
+              <li key={order.id}>
                 <div>
-                  order details here
+                  {order.customer} ordered a size {order.size} with {order.toppings.length === 0 ? 'no toppings' : `${order.toppings.length} toppings`}
                 </div>
               </li>
             )
