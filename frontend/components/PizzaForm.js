@@ -1,25 +1,25 @@
-import React from 'react'
-import { useSelector, useDispatch }  from 'react-redux'
-import { setFormValue, toggleTopping, postOrder } from '../state/slices/formSlice'
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFormValue, toggleTopping, postOrder } from '../state/slices/formSlice';
 
 export default function PizzaForm() {
-  const dispatch = useDispatch()
-  const { fullName, size, toppings, status, error } = useSelector((state) => state.form)
+  const dispatch = useDispatch();
+  const { fullName, size, toppings, status, error } = useSelector((state) => state.form);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    dispatch(setFormValue({ name, value }))
-  }
+    const { name, value } = e.target;
+    dispatch(setFormValue({ name, value }));
+  };
 
   const handleToppingChange = (e) => {
-    const { name } = e.target
-    dispatch(toggleTopping(name))
-  }
+    const { name } = e.target;
+    dispatch(toggleTopping(name));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    dispatch(postOrder({ fullName, size, toppings }))
-  }
+    e.preventDefault();
+    dispatch(postOrder({ fullName, size, toppings }));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -36,6 +36,8 @@ export default function PizzaForm() {
             name="fullName"
             placeholder="Type full name"
             type="text"
+            value={fullName}
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -53,7 +55,7 @@ export default function PizzaForm() {
       </div>
 
       <div className="input-group">
-      <label>
+        <label>
           <input data-testid="checkPepperoni" name="1" type="checkbox" checked={toppings.includes('1')} onChange={handleToppingChange} />
           Pepperoni<br /></label>
         <label>
@@ -71,5 +73,5 @@ export default function PizzaForm() {
       </div>
       <input data-testid="submit" type="submit" />
     </form>
-  )
+  );
 }

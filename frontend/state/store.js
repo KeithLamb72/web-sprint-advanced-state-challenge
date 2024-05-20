@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import ordersReducer from './slices/ordersSlice'
-import formReducer from './slices/formSlice'
+import ordersReducer from '../state/slices/ordersSlice'
+import formReducer from '../state/slices/formSlice'
 
 export const resetStore = () => configureStore({
   reducer: {
