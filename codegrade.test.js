@@ -42,7 +42,7 @@ describe('Pizza App', () => {
     await waitFor(() => screen.getByText('Sigourney Weaver ordered', queryOptions), waitForOptions)
     expect(screen.getAllByText('ordered a size', queryOptions)).toHaveLength(1)
   })
-  test.only('[1] Existing "Sigourney Weaver" order from the server renders correctly', async () => {
+  test('[1] Existing "Sigourney Weaver" order from the server renders correctly', async () => {
     // this checks only the assertions inside the beforeEach above
   })
   test('[2] Correct history item renders on order with no toppings', async () => {

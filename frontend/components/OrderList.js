@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { fetchOrders } from '../state/slices/ordersSlice'
+// frontend/components/OrderList.js
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useFetchOrdersQuery } from '../state/services/ordersApi';
+import { updateFormState } from '../state/slices/formSlice';
 
 export default function OrderList() {
-  const dispatch = useDispatch()
-  const orders = useSelector((state) => state.orders.orders)
-  const status = useSelector((state) => state.orders.status)
-  const [filter, setFilter] = useState('All')
+  const { data: orders = [], error, isLoading, refetch } = useFetchOrdersQuery();
+  const [filter, setFilter] = useState('All');
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchOrders())
-  }, [dispatch])
+    dispatch(updateFormState({ size: '' })); // Reset form size selection
+  }, [dispatch]);
 
-  const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.size === filter)
+  const filteredOrders = filter === 'All' ? orders : orders.filter((order) => order.size === filter);
 
-  if (status === 'loading') {
-    return <div>Loading orders...</div>
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching orders</div>;
   }
 
   return (
@@ -25,27 +30,24 @@ export default function OrderList() {
         {filteredOrders.map((order) => (
           <li key={order.id}>
             <div>
-              {order.customer} ordered a size {order.size} with {Array.isArray(order.toppings) && order.toppings.length > 0 ? `${order.toppings.length} toppings` : 'no toppings'}
+              {order.customer} ordered a size {order.size} with {order.toppings && order.toppings.length > 0 ? `${order.toppings.length} toppings` : 'no toppings'}
             </div>
           </li>
         ))}
       </ol>
       <div id="sizeFilters">
         Filter by size:
-        {['All', 'S', 'M', 'L'].map((size) => {
-          const className = `button-filter${filter === size ? ' active' : ''}`
-          return (
-            <button 
-              data-testid={`filterBtn${size}`} 
-              className={className} 
-              key={size} 
-              onClick={() => setFilter(size)}
-            >
-              {size}
-            </button>
-          )
-        })}
+        {['All', 'S', 'M', 'L'].map((size) => (
+          <button
+            data-testid={`filterBtn${size}`}
+            className={`button-filter${filter === size ? ' active' : ''}`}
+            key={size}
+            onClick={() => setFilter(size)}
+          >
+            {size}
+          </button>
+        ))}
       </div>
     </div>
-  )
+  );
 }

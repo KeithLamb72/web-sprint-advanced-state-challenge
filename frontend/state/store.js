@@ -1,12 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit'
-import ordersReducer from '../state/slices/ordersSlice'
-import formReducer from '../state/slices/formSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import { ordersApi } from './services/ordersApi';
+import formReducer from './slices/formSlice';
 
-export const resetStore = () => configureStore({
+export const store = configureStore({
   reducer: {
-    orders: ordersReducer,
     form: formReducer,
-  }
-})
+    [ordersApi.reducerPath]: ordersApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(ordersApi.middleware),
+});
 
-export const store = resetStore()
+export const resetStore = () => store;

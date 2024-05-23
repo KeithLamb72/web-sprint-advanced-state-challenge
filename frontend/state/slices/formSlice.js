@@ -1,54 +1,29 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice } from '@reduxjs/toolkit';
 
-export const postOrder = createAsyncThunk('form/postOrder', async (order, { rejectWithValue }) => {
-  try {
-    const response = await axios.post('http://localhost:9009/api/pizza/order', order)
-    return response.data
-  } catch (err) {
-    return rejectWithValue(err.response.data)
-  }
-})
+const initialState = {
+  fullName: '',
+  size: '',
+  toppings: [],
+  status: 'idle',
+  errorMessage: '',
+};
 
 const formSlice = createSlice({
   name: 'form',
-  initialState: {
-    fullName: '',
-    size: '',
-    toppings: [],
-    status: 'idle',
-    error: null,
-  },
+  initialState,
   reducers: {
-    setFormValue: (state, action) => {
-      state[action.payload.name] = action.payload.value
+    updateFormState: (state, action) => {
+      return { ...state, ...action.payload };
     },
-    toggleTopping: (state, action) => {
-      const topping = action.payload;
-      if (state.toppings.includes(topping)) {
-        state.toppings = state.toppings.filter((top) => top !== topping)
-      } else {
-        state.toppings.push(topping)
-      }
+    resetFormState: () => initialState,
+    setStatus: (state, action) => {
+      state.status = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(postOrder.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(postOrder.fulfilled, (state) => {
-        state.status = 'succeeded'
-        state.fullName = ''
-        state.size = ''
-        state.toppings = []
-      })
-      .addCase(postOrder.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.payload.message
-      });
+    setErrorMessage: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
-export const { setFormValue, toggleTopping } = formSlice.actions
-export default formSlice.reducer
+export const { updateFormState, resetFormState, setStatus, setErrorMessage } = formSlice.actions;
+export default formSlice.reducer;
